@@ -1,0 +1,96 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    active: header_route
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: after_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # 当请求的时间在这个时间之后，请求会被路由到http://httpbin.org:80/get
+        - After=2020-05-20T20:00:00.789-07:00[America/Denver]
+  # 与spring.profiles.active一致
+  profiles: after_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: header_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # 当请求的Header中有X-Request-Id的header，且header值为数字时，请求会被路由到配置的 uri
+        - Header=X-Request-Id, \d+
+  profiles: header_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: cookie_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # 请求带有cookie名为name,值=test的请求将都会转发到配置的uri
+        - Cookie=name, test
+  profiles: cookie_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: host_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # 含有Host为baidu.com的请求将会被路由转发
+        - Host=**.baidu.com
+  profiles: host_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: method_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # GET类型的请求都会路由转发到uri
+        - Method=GET
+  profiles: method_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: path_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # 路径匹配转发
+        - Path=/test/{id}
+  profiles: path_route
+
+
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: query_route
+        uri: http://httpbin.org:80/get
+        predicates:
+        # url请求中含有参数 name，并且foo的值匹配ba.，则请求转发，如: ?foo=aavc
+        - Query=name, aa.
+  profiles: query_route
