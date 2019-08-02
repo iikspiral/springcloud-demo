@@ -1,0 +1,1 @@
+https://cloud.spring.io/spring-cloud-static/spring-cloud-gateway/2.0.0.RELEASE/single/spring-cloud-gateway.html#_requestratelimiter_gatewayfilter_factory
